@@ -14,7 +14,7 @@ torch.backends.cudnn.deterministic = True
 
 
 def get_text_field(model_name):
-    if model_name in {'TextCNN', 'TextCNN1D', 'Transformer', 'TextRNNAtt'}:
+    if model_name in {'TextCNN', 'TextCNN1D', 'Transformer', 'TextRNNAtt', 'FastText'}:
         text_field = data.Field(tokenize='spacy',
                                 lower=True,
                                 tokenizer_language='en_core_web_sm',
@@ -29,7 +29,7 @@ def get_text_field(model_name):
                                 lower=True,
                                 tokenizer_language='en_core_web_sm',
                                 batch_first=True)
-    elif model_name == 'BERTGRU':
+    elif model_name in {'BERTGRU', 'BERT'}:
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         init_token_idx = tokenizer.cls_token_id
         eos_token_idx = tokenizer.sep_token_id
@@ -85,10 +85,10 @@ def load_data(fields, verbose=False):
     return train_data, valid_data, test_data
 
 
-def build_vocab_text(text_field, train_data):
+def build_vocab_text(text_field, train_data, embed_size):
     text_field.build_vocab(train_data,
                            max_size=MAX_VOCAB_SIZE,
-                           vectors="glove.6B.100d",
+                           vectors=f"glove.6B.{embed_size}d",
                            unk_init=torch.Tensor.normal_)
 
 
@@ -115,10 +115,6 @@ def fix_seed():
 
 
 def binary_accuracy(preds, y):
-    """
-    Returns accuracy per batch, i.e. if you get 8/10 right, this returns 0.8, NOT 8
-    """
-
     # round predictions to the closest integer
     rounded_preds = torch.round(torch.sigmoid(preds))
     correct = (rounded_preds == y).float()  # convert into float for division

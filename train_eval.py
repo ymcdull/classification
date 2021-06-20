@@ -5,7 +5,7 @@ import torch
 from utils import categorical_accuracy, epoch_time
 
 
-def train(model, train_iterator, valid_iterator, optimizer, criterion, model_name):
+def train(model, train_iterator, valid_iterator, optimizer, criterion):
     N_EPOCHS = 5
 
     best_valid_loss = float('inf')
@@ -23,7 +23,7 @@ def train(model, train_iterator, valid_iterator, optimizer, criterion, model_nam
 
         if valid_loss < best_valid_loss:
             best_valid_loss = valid_loss
-            torch.save(model.state_dict(), f'{model_name.lower()}-model.pt')
+            torch.save(model.state_dict(), f'{model.model_name}-model.pt')
 
         print(f'Epoch: {epoch + 1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
         print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc * 100:.2f}%')
@@ -37,8 +37,6 @@ def _train(model, iterator, optimizer, criterion):
     model.train()
     for batch in iterator:
         optimizer.zero_grad()
-
-        # text, text_lengths = batch.text
 
         predictions = model(batch.text)
         loss = criterion(predictions, batch.label)
@@ -61,8 +59,6 @@ def evaluate(model, iterator, criterion):
     model.eval()
     with torch.no_grad():
         for batch in iterator:
-            # text, text_lengths = batch.text
-
             predictions = model(batch.text)
             loss = criterion(predictions, batch.label)
             acc = categorical_accuracy(predictions, batch.label)
