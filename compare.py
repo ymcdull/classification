@@ -27,7 +27,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # for model_name in ['TextCNN', 'TextRNN', 'TextCNN1D', 'TextRNNAtt', 'BERTGRU']:
-    for model_name in ['TextCNN', 'TextCNN1D', 'TextRNN']:
+    for model_name in ['TextCNN', 'TextCNN1D', 'TextRNN', 'TextRCNN']:
         for embedding_dim in [100, 200, 300]:
             text_field = get_text_field(model_name)
             label_field = get_label_field()
@@ -39,8 +39,6 @@ if __name__ == '__main__':
             x = import_module('models.' + model_name)
 
             if model_name != 'BERTGRU':
-                # build_vocab_text(text_field, train_data)
-                # config = x.Config(text_field)
                 build_vocab_text(text_field, train_data, embedding_dim)
                 config = x.Config(text_field, embedding_dim, model_name)
                 model = x.Model(config)
