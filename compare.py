@@ -26,8 +26,7 @@ if __name__ == '__main__':
     nlp = spacy.load('en_core_web_sm')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    # for model_name in ['TextCNN', 'TextRNN', 'TextCNN1D', 'TextRNNAtt', 'BERTGRU']:
-    for model_name in ['TextCNN', 'TextCNN1D', 'TextRNN', 'TextRCNN']:
+    for model_name in ['TextCNN', 'TextCNN1D', 'TextRNN', 'TextRCNN', 'TextRNNAtt']:
         for embedding_dim in [100, 200, 300]:
             text_field = get_text_field(model_name)
             label_field = get_label_field()

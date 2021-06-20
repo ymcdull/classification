@@ -36,7 +36,7 @@ class Model(nn.Module):
         self.dropout = nn.Dropout(config.dropout)
 
     def forward(self, text):
-        # text = [batch size, sent len]
+        # input: text = [batch size, sent len]
         embedded = self.embedding(text)  # embedded = [batch size, sent len, embedding dim]
         embedded = embedded.unsqueeze(1)  # embedded = [batch size, 1, sent len, embedding dim]
         conved = [F.relu(conv(embedded)).squeeze(3) for conv in

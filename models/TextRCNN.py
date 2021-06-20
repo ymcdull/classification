@@ -41,7 +41,7 @@ class Model(nn.Module):
         self.fc = nn.Linear(config.hidden_size * 2 + config.embedding_dim, config.num_classes)
 
     def forward(self, text):
-        # text = [batch size, seq len]
+        # input: text = [batch size, seq len]
         embed = self.embedding(text)  # embed = [batch size, seq len, embedding dim]=[64, 32, 64]
         out, _ = self.lstm(embed)  # out = [batch size, seq len, hidden size * 2]
         out = torch.cat((embed, out), 2)  # out = [batch size, seq len, embedding dim + hidden size * 2]
